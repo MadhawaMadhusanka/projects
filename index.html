@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madhawa Madhusanka | Hardware, Robotics & Full-Stack Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#131c2e',
+                            900: '#0f172a',
+                            950: '#080d1a',
+                        },
+                        cyan: {
+                            450: '#00d2ff',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom subtle grid background for hardware/CAD aesthetic */
+        .bg-cad-grid {
+            background-size: 32px 32px;
+            background-image: 
+                linear-gradient(to right, rgba(30, 41, 59, 0.45) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(30, 41, 59, 0.45) 1px, transparent 1px);
+        }
+        .card-glow:hover {
+            box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.25), 0 8px 16px -6px rgba(0, 0, 0, 0.6);
+        }
+        /* Smooth fade transitions */
+        .view-transition {
+            animation: fadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080d1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200 font-sans min-h-screen flex flex-col bg-cad-grid selection:bg-cyan-500 selection:text-slate-950">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-slate-950/85 border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand / Name -->
+            <button onclick="showHomeView()" class="flex items-center gap-3 text-left group focus:outline-none">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-slate-950 font-bold text-lg shadow-lg shadow-cyan-500/20 group-hover:scale-105 transition-transform">
+                    <i data-lucide="cpu" class="w-5 h-5 text-slate-950"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-white tracking-tight text-base sm:text-lg block leading-none">Madhawa Madhusanka</span>
+                    <span class="font-mono text-xs text-cyan-400 block mt-1">Robotics • 3D CAD • Full-Stack</span>
+                </div>
+            </button>
+
+            <!-- Nav Links -->
+            <nav class="flex items-center gap-2 sm:gap-4">
+                <button onclick="showHomeView()" class="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/70 transition-colors">
+                    Projects
+                </button>
+                <button onclick="toggleAboutModal()" class="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/70 transition-colors">
+                    About Me
+                </button>
+                <button onclick="toggleGuideModal()" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-mono font-medium bg-slate-800/90 hover:bg-slate-700 text-cyan-400 border border-slate-700 transition-colors flex items-center gap-1.5" title="How to add your own photos & host on GitHub">
+                    <i data-lucide="help-circle" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">How to Edit</span>
+                </button>
+                <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 transition-colors" title="GitHub Profile">
+                    <i data-lucide="github" class="w-4 h-4"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/madhawa-madhusanka-798198446/" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 transition-colors" title="LinkedIn Profile">
+                    <i data-lucide="linkedin" class="w-4 h-4"></i>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ========================================== -->
+        <!-- 1. INDEX VIEW: HERO + PROJECT GRID         -->
+        <!-- ========================================== -->
+        <div id="home-view" class="view-transition">
+            
+            <!-- Compact Hero / Bio Banner -->
+            <section class="relative rounded-2xl bg-gradient-to-b from-slate-900/90 to-slate-900/50 border border-slate-800/90 p-6 sm:p-8 mb-10 overflow-hidden">
+                <div class="absolute -right-16 -top-16 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -left-16 -bottom-16 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    <div class="max-w-3xl">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono mb-4">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                            Hardware Maker • STEM Educator • Full-Stack Developer
+                        </div>
+                        <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+                            Engineering Hardware, 3D CAD Prototypes & Smart Software.
+                        </h1>
+                        <p class="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
+                            Hi, I'm <strong class="text-white">Madhawa Madhusanka</strong>. I design and build custom robotics, ESP32/Arduino embedded systems, 3D-printed mechanical assemblies, and full-stack web/mobile applications. I also teach robotics and mentor students on their Arduino & IoT projects.
+                        </p>
+                        
+                        <!-- Quick Skill Pills -->
+                        <div class="mt-5 flex flex-wrap gap-2">
+                            <span class="px-2.5 py-1 rounded-md bg-slate-800/90 border border-slate-700/80 text-xs font-mono text-slate-300 flex items-center gap-1.5">
+                                <i data-lucide="bot" class="w-3.5 h-3.5 text-cyan-400"></i> Robotics & ESP32/Arduino
+                            </span>
+                            <span class="px-2.5 py-1 rounded-md bg-slate-800/90 border border-slate-700/80 text-xs font-mono text-slate-300 flex items-center gap-1.5">
+                                <i data-lucide="box" class="w-3.5 h-3.5 text-amber-400"></i> Onshape 3D CAD & Printing
+                            </span>
+                            <span class="px-2.5 py-1 rounded-md bg-slate-800/90 border border-slate-700/80 text-xs font-mono text-slate-300 flex items-center gap-1.5">
+                                <i data-lucide="graduation-cap" class="w-3.5 h-3.5 text-emerald-400"></i> STEM & IoT Mentoring
+                            </span>
+                            <span class="px-2.5 py-1 rounded-md bg-slate-800/90 border border-slate-700/80 text-xs font-mono text-slate-300 flex items-center gap-1.5">
+                                <i data-lucide="code-2" class="w-3.5 h-3.5 text-purple-400"></i> PHP • Tailwind • Flutter
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Contact / Action Box -->
+                    <div class="flex sm:flex-row lg:flex-col gap-3 shrink-0">
+                        <button onclick="toggleAboutModal()" class="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20">
+                            <i data-lucide="user-check" class="w-4 h-4"></i>
+                            Full Bio & Contact
+                        </button>
+                        <a href="mailto:Madhawamadusanka2005@gmail.com" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium text-sm transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="mail" class="w-4 h-4 text-cyan-400"></i>
+                            Email Me
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Filter Bar & Search -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div>
+                    <h2 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2.5">
+                        <i data-lucide="layers" class="w-6 h-6 text-cyan-400"></i>
+                        Featured Engineering & Tech Projects
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-0.5">Click on any project card below to view full circuit specs, 3D designs, and photos.</p>
+                </div>
+
+                <!-- Category Filter Buttons -->
+                <div id="filter-container" class="flex flex-wrap gap-2">
+                    <button onclick="filterProjects('All')" data-filter="All" class="filter-btn active-filter px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all bg-cyan-500 text-slate-950 font-semibold shadow-md shadow-cyan-500/20">
+                        All Projects
+                    </button>
+                    <button onclick="filterProjects('Robotics')" data-filter="Robotics" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800">
+                        Robotics & Embedded
+                    </button>
+                    <button onclick="filterProjects('IoT')" data-filter="IoT" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800">
+                        IoT & Automation
+                    </button>
+                    <button onclick="filterProjects('3D CAD')" data-filter="3D CAD" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800">
+                        3D CAD & Printing
+                    </button>
+                    <button onclick="filterProjects('Software')" data-filter="Software" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800">
+                        Web & Mobile
+                    </button>
+                </div>
+            </div>
+
+            <!-- PROJECT CARDS GRID -->
+            <div id="projects-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Populated dynamically via JS -->
+            </div>
+
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 2. PROJECT DETAIL VIEW (FULL PAGE)         -->
+        <!-- ========================================== -->
+        <div id="detail-view" class="hidden view-transition">
+            <!-- Top Back Bar -->
+            <div class="mb-6 flex flex-wrap items-center justify-between gap-4">
+                <button onclick="showHomeView()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-700/80 font-medium text-sm transition-all group">
+                    <i data-lucide="arrow-left" class="w-4 h-4 text-cyan-400 group-hover:-translate-x-1 transition-transform"></i>
+                    Back to All Projects
+                </button>
+
+                <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
+                    <span>Projects</span>
+                    <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    <span id="detail-breadcrumb" class="text-cyan-400 font-semibold">Project Details</span>
+                </div>
+            </div>
+
+            <!-- Dynamic Detail Content Injected Here -->
+            <div id="detail-content" class="bg-slate-900/90 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+                <!-- Populated by openProjectDetail(id) -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ========================================== -->
+    <!-- ABOUT ME & STEM MENTORING MODAL            -->
+    <!-- ========================================== -->
+    <div id="about-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto view-transition">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                        <i data-lucide="user" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">Madhawa Madhusanka</h3>
+                        <p class="text-xs font-mono text-cyan-400">Maharagama, Sri Lanka • Maker & STEM Educator</p>
+                    </div>
+                </div>
+                <button onclick="toggleAboutModal()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="mt-5 space-y-4 text-sm sm:text-base text-slate-300 leading-relaxed">
+                <p>
+                    I am a technology enthusiast, maker, and STEM educator who loves bringing ideas to life through hardware, 3D design, and code. Alongside building my own systems, I am passionate about teaching robotics and guiding students to build their own Arduino and IoT projects.
+                </p>
+                
+                <h4 class="font-bold text-white text-base pt-2">What I Do & Build:</h4>
+                <ul class="space-y-2.5 text-sm">
+                    <li class="flex items-start gap-2.5">
+                        <i data-lucide="cpu" class="w-4 h-4 text-cyan-400 shrink-0 mt-1"></i>
+                        <span><strong class="text-white">Robotics & Embedded Systems:</strong> Developing automated solutions, custom robots, and electronics using ESP32, Arduino, and various sensor modules.</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <i data-lucide="graduation-cap" class="w-4 h-4 text-emerald-400 shrink-0 mt-1"></i>
+                        <span><strong class="text-white">STEM Teaching & Project Mentoring:</strong> Teaching robotics to young learners and helping students design, troubleshoot, and complete their school or competition Arduino and IoT projects.</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <i data-lucide="box" class="w-4 h-4 text-amber-400 shrink-0 mt-1"></i>
+                        <span><strong class="text-white">3D CAD & Prototyping:</strong> Designing mechanical parts, enclosures, and custom mechanisms in Onshape and bringing them into the real world through 3D printing.</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <i data-lucide="code" class="w-4 h-4 text-purple-400 shrink-0 mt-1"></i>
+                        <span><strong class="text-white">Software Development:</strong> Building full-stack web systems (PHP, MySQL, Tailwind CSS) and cross-platform mobile apps (Flutter, Firebase).</span>
+                    </li>
+                </ul>
+
+                <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 mt-6">
+                    <h4 class="font-semibold text-white text-sm mb-2">Get in Touch / Project Collaboration</h4>
+                    <div class="flex flex-wrap gap-3 text-xs font-mono">
+                        <a href="mailto:Madhawamadusanka2005@gmail.com" class="px-3 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-slate-800 flex items-center gap-2">
+                            <i data-lucide="mail" class="w-4 h-4"></i> Madhawamadusanka2005@gmail.com
+                        </a>
+                        <a href="https://www.linkedin.com/in/madhawa-madhusanka-798198446/" target="_blank" class="px-3 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-blue-400 border border-slate-800 flex items-center gap-2">
+                            <i data-lucide="linkedin" class="w-4 h-4"></i> LinkedIn Profile
+                        </a>
+                        <a href="https://www.facebook.com/Mr.MadhawaMadhusanka" target="_blank" class="px-3 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-800 flex items-center gap-2">
+                            <i data-lucide="facebook" class="w-4 h-4"></i> Facebook
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- GUIDE MODAL: HOW TO ADD PHOTOS & GITHUB    -->
+    <!-- ========================================== -->
+    <div id="guide-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto view-transition">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                <div class="flex items-center gap-2.5">
+                    <i data-lucide="terminal" class="w-6 h-6 text-cyan-400"></i>
+                    <h3 class="text-lg sm:text-xl font-bold text-white">Oyage Photos Danna Saha GitHub Host Karana Widiya</h3>
+                </div>
+                <button onclick="toggleGuideModal()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="mt-5 space-y-5 text-sm text-slate-300 leading-relaxed">
+                <div class="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-200">
+                    <strong>1. Oyage Project Photos Danna Widiya:</strong>
+                    <p class="mt-1 text-slate-300">
+                        Project folder eka athule <code class="text-cyan-400 font-mono">images</code> kiyala folder ekak hadala oyage project photos ekata danna (e.g. <code class="text-cyan-400 font-mono">images/delta-robot.jpg</code>). Ita passe me <code class="text-cyan-400 font-mono">index.html</code> file eke pahala script eke thiyena <code class="text-cyan-400 font-mono">projectsData</code> list eke <code class="text-cyan-400 font-mono">image: "images/delta-robot.jpg"</code> widiyata wenas karanna.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-white mb-2">2. Aluth Project Ekak Ekathu Karana Widiya:</h4>
+                    <p class="mb-2">Me code eke pahala <code class="text-cyan-400 font-mono">&lt;script&gt;</code> tag eka athule <code class="text-cyan-400 font-mono">const projectsData = [...]</code> kiyala array ekak thiyenawa. Eke thiyena project block ekak copy-paste karala aluth project ekak lesiyenma danna puluwan.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-white mb-2">3. GitHub Pages Wala Free Host Karana Widiya:</h4>
+                    <ol class="list-decimal list-inside space-y-1.5 text-slate-300">
+                        <li>GitHub eke <code class="text-cyan-400 font-mono">username.github.io</code> kiyala Public repository ekak hadanna.</li>
+                        <li>Me file eka <code class="text-cyan-400 font-mono">index.html</code> namin saha oyage <code class="text-cyan-400 font-mono">images</code> folder eka e repository ekata upload karanna.</li>
+                        <li>Repository eke <strong>Settings &rarr; Pages</strong> walata gihin Branch eka <code class="text-cyan-400 font-mono">main</code> deela Save karanna.</li>
+                        <li>Winadi deken oyage portfolio website eka free live wada karanawa!</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950/90 mt-16 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span>© <span id="year"></span> Madhawa Madhusanka. Built for GitHub Pages.</span>
+            </div>
+            <div class="flex items-center gap-4 font-mono">
+                <button onclick="showHomeView()" class="hover:text-cyan-400 transition-colors">Projects</button>
+                <button onclick="toggleAboutModal()" class="hover:text-cyan-400 transition-colors">About</button>
+                <a href="https://www.linkedin.com/in/madhawa-madhusanka-798198446/" target="_blank" class="hover:text-cyan-400 transition-colors">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT: PROJECT DATA & VIEW CONTROLLER -->
+    <!-- ========================================== -->
+    <script>
+        // Set Current Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        /**
+         * ============================================================================
+         * MADHAWA'S PROJECTS DATABASE
+         * Oyage photos danna oni nam `image` saha `gallery` links wenas karanna.
+         * (e.g., image: "./images/my-robot.jpg")
+         * ============================================================================
+         */
+        const projectsData = [
+            {
+                id: "delta-robot-plotter",
+                title: "3-Axis Delta Robot for 2D Plotting",
+                category: "Robotics",
+                badgeText: "Robotics & Kinematics",
+                status: "Completed Prototype",
+                date: "2025",
+                shortDesc: "High-speed parallel kinematics Delta robot controlled via an ESP32 web server for automated 2D drawing and precision coordinate plotting.",
+                image: "https://placehold.co/800x520/0f172a/00d2ff?text=3-Axis+Delta+Robot+Plotter",
+                gallery: [
+                    "https://placehold.co/800x500/0f172a/00d2ff?text=Delta+Kinematics+Assembly",
+                    "https://placehold.co/800x500/1e293b/38bdf8?text=ESP32+%2B+TB6600+Stepper+Wiring",
+                    "https://placehold.co/800x500/0f172a/a855f7?text=3D+Printed+Ball+Joint+Arms"
+                ],
+                tags: ["ESP32", "TB6600 Drivers", "Inverse Kinematics", "3D Printed", "Web UI"],
+                overview: "This project implements a 3-Axis parallel Delta Robot designed from scratch for precision 2D plotting. Using an ESP32 microcontroller hosting an embedded web interface, users can send drawing commands, home the axes using optical/mechanical limit switches, and control stepper motors in real time.",
+                hardwareList: [
+                    "ESP32 Dual-Core Microcontroller (Wi-Fi Web Controller)",
+                    "3x NEMA 17 Bipolar Stepper Motors",
+                    "3x TB6600 High-Current Stepper Motor Drivers",
+                    "3x Mechanical Homing Limit Switches",
+                    "12V / 24V DC Switching Power Supply",
+                    "Custom 3D Printed Carbon/PLA Parallel Arms & Effector"
+                ],
+                features: [
+                    "Inverse Kinematics engine calculating step angles for smooth X, Y, Z planar motion.",
+                    "Self-hosted responsive Web Interface on the ESP32 for wireless jogging, homing, and plotting.",
+                    "Automated homing cycle utilizing top-mounted limit switches for repeatable zero calibration.",
+                    "Custom-designed 3D CAD effector holds standard markers/pens with spring-loaded Z compliance."
+                ],
+                architectureNote: "Motor pulse (PUL+) and direction (DIR+) lines are driven directly by ESP32 GPIO pins through TB6600 optocouplers, with non-blocking stepper interpolation.",
+                githubUrl: "#",
+                cadUrl: "#"
+            },
+            {
+                id: "quadruped-spider-robot",
+                title: "12-DOF Quadruped Spider Robot",
+                category: "Robotics",
+                badgeText: "Robotics & 3D CAD",
+                status: "Active Build",
+                date: "2025",
+                shortDesc: "3D-printed 4-legged walking spider robot utilizing 12 servo motors for multi-directional creep gait locomotion and obstacle navigation.",
+                image: "https://placehold.co/800x520/0f172a/34d399?text=12-Servo+Quadruped+Spider+Robot",
+                gallery: [
+                    "https://placehold.co/800x500/0f172a/34d399?text=3D+Printed+Coxa+Femur+Tibia+Joints",
+                    "https://placehold.co/800x500/1e293b/34d399?text=PCA9685+16-Ch+PWM+Servo+Controller"
+                ],
+                tags: ["Arduino / ESP32", "12x Servos", "PCA9685 PWM", "Onshape 3D CAD"],
+                overview: "A custom-modeled quadruped spider robot featuring 3 Degrees of Freedom (Coxa, Femur, Tibia) per leg—totaling 12 servo actuators. Designed in 3D CAD and printed on an FDM 3D printer, this robot demonstrates stable walking gaits, body pitch/roll balancing, and wireless remote control.",
+                hardwareList: [
+                    "Arduino Nano / ESP32 Main Controller",
+                    "PCA9685 16-Channel 12-Bit PWM I2C Servo Driver",
+                    "12x MG90S / MG996R Metal Gear Micro Servos",
+                    "High-Discharge 2S Li-Ion / LiPo Battery Pack + UBEC 5V Buck Converter",
+                    "Full Custom 3D Printed Chassis & Leg Linkages"
+                ],
+                features: [
+                    "3-DOF leg kinematics allowing forward/reverse creep gait, turning in place, and body posture tilting.",
+                    "Centralized I2C PWM control via PCA9685 freeing microcontroller timers from servo jitter.",
+                    "Lightweight, snap-fit 3D printed mechanical joints optimized for low inertia and easy servo horn mounting.",
+                    "Great educational demonstrator for teaching students robotics kinematics and servo calibration."
+                ],
+                architectureNote: "Powered by a dedicated high-current 5V step-down regulator to prevent brownout resets during simultaneous 12-servo torque spikes.",
+                githubUrl: "#",
+                cadUrl: "#"
+            },
+            {
+                id: "motorcycle-gps-gsm-security",
+                title: "Motorcycle GPS & GSM Anti-Theft System",
+                category: "IoT",
+                badgeText: "IoT & Embedded Security",
+                status: "Field Tested",
+                date: "2025",
+                shortDesc: "Smart vehicle security unit with tilt/vibration intrusion detection, instant GSM phone call/SMS alerts, and live GPS location tracking.",
+                image: "https://placehold.co/800x520/0f172a/f59e0b?text=Motorcycle+GPS+%26+GSM+Security",
+                gallery: [
+                    "https://placehold.co/800x500/0f172a/f59e0b?text=ESP32+%2B+SIM900+%2B+GPS+Circuit",
+                    "https://placehold.co/800x500/1e293b/f59e0b?text=SMS+Google+Maps+Coordinate+Alert"
+                ],
+                tags: ["ESP32", "SIM900 GSM", "NEO-6M GPS", "MPU6050", "C++"],
+                overview: "Designed to protect motorcycles from unauthorized movement or theft, this embedded security box continuously monitors 3-axis acceleration and tilt angles using an MPU6050 sensor. When armed, any tampering triggers an immediate phone call and SMS containing a clickable Google Maps GPS link.",
+                hardwareList: [
+                    "ESP32 Microcontroller",
+                    "SIM800L / SIM900 GSM GPRS Module",
+                    "NEO-6M GPS Receiver Module with External Ceramic Antenna",
+                    "MPU6050 6-Axis Accelerometer & Gyroscope",
+                    "12V-to-5V Buck Converter for Motorcycle Battery Integration"
+                ],
+                features: [
+                    "Real-time motion & tilt threshold detection via I2C MPU6050 gyroscope/accelerometer.",
+                    "Automated alert sequence: Dials owner's mobile number and dispatches SMS with latitude/longitude link.",
+                    "Two-way SMS command parser allowing the owner to request live location on demand.",
+                    "Low-power sleep state optimizations to protect the motorcycle battery during multi-day parking."
+                ],
+                architectureNote: "Uses dual Hardware UART serial ports on the ESP32 (`HardwareSerial`) to communicate simultaneously with the GPS module and GSM modem without buffer loss.",
+                githubUrl: "#",
+                cadUrl: "#"
+            },
+            {
+                id: "pid-line-following-robot",
+                title: "High-Speed Autonomous Line-Following Robot",
+                category: "Robotics",
+                badgeText: "Robotics & STEM",
+                status: "Completed",
+                date: "2025",
+                shortDesc: "Precision autonomous rover built with an ESP32, TB6612FNG dual H-Bridge driver, and a 5-channel TCRT5000 infrared sensor array.",
+                image: "https://placehold.co/800x520/0f172a/ec4899?text=Autonomous+Line+Following+Robot",
+                gallery: [
+                    "https://placehold.co/800x500/0f172a/ec4899?text=TCRT5000+5-Sensor+Array+Chassis",
+                    "https://placehold.co/800x500/1e293b/ec4899?text=TB6612FNG+MOSFET+Motor+Driver"
+                ],
+                tags: ["ESP32", "TB6612FNG", "TCRT5000 IR", "PID Control", "STEM Project"],
+                overview: "An agile differential-drive line-following robot engineered for smooth curve tracking and sharp intersection handling. Replacing inefficient L298N drivers with a MOSFET-based TB6612FNG driver ensures minimal voltage drop and crisp PWM speed modulation.",
+                hardwareList: [
+                    "ESP32 Development Board",
+                    "TB6612FNG Dual Channel MOSFET Motor Driver",
+                    "5-Channel TCRT5000 Infrared Reflective Sensor Array",
+                    "2x High-RPM N20 / BO DC Gear Motors + High-Grip Silicone Wheels",
+                    "Custom 3D Printed Sensor Bracket & Acrylic/PLA Chassis"
+                ],
+                features: [
+                    "5-sensor array layout reads track error from far-left to far-right for proportional steering correction.",
+                    "High-efficiency TB6612FNG H-bridge delivers fast dynamic braking and differential turning.",
+                    "Adjustable sensor height mount designed in 3D CAD to block ambient IR interference.",
+                    "Used as a core reference build for mentoring school and competition robotics students."
+                ],
+                architectureNote: "PWM channels drive `PWMA` and `PWMB` independently while direction pins handle forward, coast, and active reverse pivot turns on tight 90-degree corners.",
+                githubUrl: "#",
+                cadUrl: "#"
+            },
+            {
+                id: "smartsort-waste-bin",
+                title: "SmartSort Automated Waste Segregation Bin",
+                category: "3D CAD",
+                badgeText: "3D CAD & Automation",
+                status: "Competition Prototype",
+                date: "2025",
+                shortDesc: "Mechatronic waste sorting system combining inductive metal sensing, capacitive moisture detection, and 3D-printed servo trapdoors.",
+                image: "https://placehold.co/800x520/0f172a/a855f7?text=SmartSort+Automated+Waste+Bin",
+                gallery: [
+                    "https://placehold.co/800x500/0f172a/a855f7?text=Onshape+3D+CAD+Sorting+Chute",
+                    "https://placehold.co/800x500/1e293b/a855f7?text=Inductive+%26+Capacitive+Sensor+Bay"
+                ],
+                tags: ["Onshape 3D CAD", "Arduino / ESP32", "Inductive Sensor", "Servo Mechanics"],
+                overview: "SmartSort automatically classifies disposed waste items into Metal, Wet/Organic, and Dry/Plastic compartments. The entire mechanical sorting chute, rotating base, and servo-actuated trapdoor hinges were modeled in Onshape 3D CAD for smooth, jam-free operation.",
+                hardwareList: [
+                    "Arduino Uno / ESP32 Controller",
+                    "LJ12A3-4-Z/BX Inductive Proximity Sensor (Metal Detection)",
+                    "Capacitive Moisture / Dielectric Sensor (Wet vs. Dry Detection)",
+                    "Ultrasonic Presence Sensor (HC-SR04)",
+                    "High-Torque MG996R Servo Motors for Chute Deflection & Trapdoor",
+                    "3D Printed Hinges, Sensor Mounts & Multi-Bin Enclosure"
+                ],
+                features: [
+                    "Multi-stage sensor pipeline identifies object arrival, checks metallic conductivity, and evaluates moisture level.",
+                    "3D-printed rotating chute directs waste to the matching bin compartment before opening the servo trapdoor.",
+                    "Status LEDs and buzzer indicators provide immediate user feedback during sorting.",
+                    "Ideal showcase of combining mechanical CAD design with sensor-driven automation."
+                ],
+                architectureNote: "Sequential state-machine firmware prevents false triggers and waits for servo settling before releasing the waste item.",
+                githubUrl: "#",
+                cadUrl: "#"
+            },
+            {
+                id: "offline-rfid-attendance-system",
+                title: "Smart RFID Attendance & Management Web System",
+                category: "Software",
+                badgeText: "Full-Stack Web & RFID",
+                status: "Production Ready",
+                date: "2025",
+                shortDesc: "Self-contained offline-capable PHP, MySQL, and Tailwind CSS web application integrated with RFID card scanning for student/staff attendance.",
+                image: "https://placehold.co/800x520/0f172a/38bdf8?text=RFID+Attendance+Web+System",
+                gallery: [
+                    "https://placehold.co/800x500/0f172a/38bdf8?text=Live+RFID+Scan+Dashboard+UI",
+                    "https://placehold.co/800x500/1e293b/38bdf8?text=Attendance+Reports+%26+MySQL+Admin"
+                ],
+                tags: ["PHP", "MySQL", "Tailwind CSS", "JavaScript", "RFID Hardware"],
+                overview: "A complete full-stack attendance tracking solution built for institutes, labs, and classrooms. When a student taps their RFID card, the system logs the timestamp in MySQL, displays live student profile verification on screen, and generates exportable attendance analytics.",
+                hardwareList: [
+                    "13.56MHz RC522 / USB HID RFID Reader Module",
+                    "Local Apache + PHP + MySQL Server Environment (XAMPP / cPanel)",
+                    "Compiled Local Tailwind CSS Frontend (Zero external CDN dependency)",
+                    "AJAX / Fetch API Real-Time Scan Listener"
+                ],
+                features: [
+                    "Instantaneous RFID UID lookup with visual & audio confirmation for check-in / check-out.",
+                    "Comprehensive Admin Dashboard for managing student enrollments, cards, classes, and daily logs.",
+                    "Fully offline-ready architecture using locally compiled Tailwind CSS for fast LAN performance.",
+                    "Searchable date-range filtering and one-click CSV/PDF attendance sheet exports."
+                ],
+                architectureNote: "Built with clean PDO/MySQLi prepared statements and asynchronous JavaScript polling for zero-reload card scanning.",
+                githubUrl: "#",
+                cadUrl: "#"
+            }
+        ];
+
+        // Current filter state
+        let currentFilter = 'All';
+
+        // Badge Color Helper
+        function getCategoryColors(category) {
+            switch (category) {
+                case 'Robotics':
+                    return 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30';
+                case 'IoT':
+                    return 'bg-amber-500/15 text-amber-300 border-amber-500/30';
+                case '3D CAD':
+                    return 'bg-purple-500/15 text-purple-300 border-purple-500/30';
+                case 'Software':
+                    return 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30';
+                default:
+                    return 'bg-slate-800 text-slate-300 border-slate-700';
+            }
+        }
+
+        // Render Project Grid on Index View
+        function renderProjectsGrid(filter = 'All') {
+            const grid = document.getElementById('projects-grid');
+            const filtered = filter === 'All' 
+                ? projectsData 
+                : projectsData.filter(p => p.category === filter);
+
+            grid.innerHTML = filtered.map(project => `
+                <article 
+                    onclick="openProjectDetail('${project.id}')"
+                    class="group cursor-pointer rounded-2xl bg-slate-900/90 border border-slate-800/90 hover:border-cyan-500/60 overflow-hidden transition-all duration-300 flex flex-col card-glow"
+                >
+                    <!-- Project Photo Container -->
+                    <div class="relative aspect-[16/10] w-full bg-slate-950 overflow-hidden border-b border-slate-800/80">
+                        <img 
+                            src="${project.image}" 
+                            alt="${project.title}" 
+                            class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                            onerror="this.src='https://placehold.co/800x500/0f172a/38bdf8?text=Project+Image'"
+                        />
+                        <!-- Category Badge Overlay -->
+                        <div class="absolute top-3 left-3">
+                            <span class="px-2.5 py-1 rounded-lg text-xs font-mono font-medium backdrop-blur-md border ${getCategoryColors(project.category)}">
+                                ${project.badgeText}
+                            </span>
+                        </div>
+                        <!-- Hover Action Indicator -->
+                        <div class="absolute bottom-3 right-3 w-9 h-9 rounded-xl bg-slate-950/80 backdrop-blur-md border border-slate-700 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500 group-hover:text-slate-950 group-hover:border-cyan-400 transition-colors">
+                            <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors line-clamp-1">
+                                ${project.title}
+                            </h3>
+                            <p class="mt-2 text-xs sm:text-sm text-slate-400 line-clamp-2 leading-relaxed">
+                                ${project.shortDesc}
+                            </p>
+                        </div>
+
+                        <!-- Tech Stack Tags -->
+                        <div class="mt-4 pt-3 border-t border-slate-800/80 flex flex-wrap gap-1.5">
+                            ${project.tags.slice(0, 4).map(tag => `
+                                <span class="px-2 py-0.5 rounded bg-slate-950 text-slate-300 border border-slate-800 text-[11px] font-mono">
+                                    ${tag}
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        // Filter Handler
+        function filterProjects(category) {
+            currentFilter = category;
+            
+            // Update active button styles
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.getAttribute('data-filter') === category) {
+                    btn.className = "filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20";
+                } else {
+                    btn.className = "filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800";
+                }
+            });
+
+            renderProjectsGrid(category);
+        }
+
+        // Open Individual Project Detail View
+        function openProjectDetail(projectId) {
+            const project = projectsData.find(p => p.id === projectId);
+            if (!project) return;
+
+            document.getElementById('detail-breadcrumb').textContent = project.title;
+
+            const detailContainer = document.getElementById('detail-content');
+            detailContainer.innerHTML = `
+                <!-- Hero Banner Image & Title Overlay -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 border-b border-slate-800">
+                    <!-- Main Photo -->
+                    <div class="lg:col-span-7 bg-slate-950 relative min-h-[280px] sm:min-h-[380px] flex items-center justify-center overflow-hidden">
+                        <img 
+                            id="main-detail-image"
+                            src="${project.image}" 
+                            alt="${project.title}" 
+                            class="w-full h-full object-cover"
+                        />
+                    </div>
+
+                    <!-- Project Summary Header -->
+                    <div class="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between bg-slate-900/60">
+                        <div>
+                            <div class="flex flex-wrap items-center gap-2 mb-3">
+                                <span class="px-3 py-1 rounded-lg text-xs font-mono font-medium border ${getCategoryColors(project.category)}">
+                                    ${project.badgeText}
+                                </span>
+                                <span class="px-2.5 py-1 rounded-lg text-xs font-mono bg-slate-800 text-slate-300">
+                                    ${project.status}
+                                </span>
+                            </div>
+
+                            <h1 class="text-2xl sm:text-3xl font-extrabold text-white leading-tight">
+                                ${project.title}
+                            </h1>
+
+                            <p class="mt-4 text-slate-300 text-sm sm:text-base leading-relaxed">
+                                ${project.overview}
+                            </p>
+
+                            <!-- Tech Stack Pills -->
+                            <div class="mt-6">
+                                <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400 mb-2.5">Technologies & Microcontrollers</h4>
+                                <div class="flex flex-wrap gap-2">
+                                    ${project.tags.map(tag => `
+                                        <span class="px-3 py-1 rounded-lg bg-slate-950 text-cyan-300 border border-slate-800 text-xs font-mono">
+                                            ${tag}
+                                        </span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gallery Thumbnail Switcher -->
+                        <div class="mt-6 pt-5 border-t border-slate-800/80">
+                            <span class="text-xs font-mono text-slate-400 block mb-2">Project Photos (Click to preview):</span>
+                            <div class="flex gap-2.5 overflow-x-auto pb-1">
+                                <button onclick="changeDetailImage('${project.image}')" class="w-20 h-14 rounded-lg overflow-hidden border-2 border-cyan-500 shrink-0 focus:outline-none">
+                                    <img src="${project.image}" class="w-full h-full object-cover" alt="Thumbnail 1">
+                                </button>
+                                ${project.gallery.map((imgUrl, idx) => `
+                                    <button onclick="changeDetailImage('${imgUrl}')" class="w-20 h-14 rounded-lg overflow-hidden border border-slate-700 hover:border-cyan-400 shrink-0 focus:outline-none transition-colors">
+                                        <img src="${imgUrl}" class="w-full h-full object-cover" alt="Thumbnail ${idx + 2}">
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lower Technical Breakdown Grid -->
+                <div class="p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    
+                    <!-- Left Column: Key Engineering Features & Circuit Notes -->
+                    <div class="lg:col-span-7 space-y-6">
+                        <div>
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2 mb-4">
+                                <i data-lucide="check-circle-2" class="w-5 h-5 text-cyan-400"></i>
+                                Key Engineering & System Features
+                            </h3>
+                            <ul class="space-y-3">
+                                ${project.features.map(feat => `
+                                    <li class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 text-sm text-slate-300">
+                                        <span class="w-2 h-2 rounded-full bg-cyan-400 mt-2 shrink-0"></span>
+                                        <span>${feat}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+
+                        <!-- System Architecture Note -->
+                        <div class="p-5 rounded-xl bg-gradient-to-r from-cyan-500/10 to-blue-600/5 border border-cyan-500/20">
+                            <h4 class="text-sm font-mono font-semibold text-cyan-300 flex items-center gap-2 mb-1.5">
+                                <i data-lucide="cpu" class="w-4 h-4"></i>
+                                Hardware & Firmware Architecture Note
+                            </h4>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                ${project.architectureNote}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Bill of Materials (BOM) / Components Used -->
+                    <div class="lg:col-span-5 space-y-6">
+                        <div class="p-5 rounded-2xl bg-slate-950 border border-slate-800">
+                            <h3 class="text-base font-bold text-white flex items-center gap-2 mb-4">
+                                <i data-lucide="wrench" class="w-5 h-5 text-amber-400"></i>
+                                Hardware Components & Stack
+                            </h3>
+                            <ul class="divide-y divide-slate-800/80 text-sm">
+                                ${project.hardwareList.map(item => `
+                                    <li class="py-2.5 flex items-center gap-2.5 text-slate-300">
+                                        <i data-lucide="chevron-right" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+                                        <span>${item}</span>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+
+                        <!-- Student Mentoring Callout -->
+                        <div class="p-5 rounded-2xl bg-slate-950/90 border border-slate-800 flex flex-col justify-between gap-4">
+                            <div>
+                                <span class="text-xs font-mono text-emerald-400 uppercase">Need Help With a Similar Project?</span>
+                                <h4 class="text-base font-bold text-white mt-1">Arduino, Robotics & IoT Mentoring</h4>
+                                <p class="text-xs text-slate-400 mt-1">
+                                    I help students design, 3D print, and code custom robotics and IoT prototypes for school exhibitions and competitions.
+                                </p>
+                            </div>
+                            <a href="mailto:Madhawamadusanka2005@gmail.com?subject=Inquiry%20regarding%20${encodeURIComponent(project.title)}" class="w-full py-2.5 px-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-xs sm:text-sm text-center transition-colors flex items-center justify-center gap-2">
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                                Ask About This Project
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            `;
+
+            // Switch Views
+            document.getElementById('home-view').classList.add('hidden');
+            document.getElementById('detail-view').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            lucide.createIcons();
+        }
+
+        // Swap Main Image inside Detail View
+        function changeDetailImage(imgUrl) {
+            const mainImg = document.getElementById('main-detail-image');
+            if (mainImg) {
+                mainImg.src = imgUrl;
+            }
+        }
+
+        // Return to Home Project Grid
+        function showHomeView() {
+            document.getElementById('detail-view').classList.add('hidden');
+            document.getElementById('home-view').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Modals Toggle
+        function toggleAboutModal() {
+            const modal = document.getElementById('about-modal');
+            modal.classList.toggle('hidden');
+        }
+
+        function toggleGuideModal() {
+            const modal = document.getElementById('guide-modal');
+            modal.classList.toggle('hidden');
+        }
+
+        // Initialize Portfolio on Page Load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderProjectsGrid('All');
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
