@@ -50,10 +50,10 @@
         }
         /* Smooth fade transitions */
         .view-transition {
-            animation: fadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
         /* Custom Scrollbar */
@@ -75,7 +75,53 @@
 </head>
 <body class="bg-slate-950 text-slate-200 font-sans min-h-screen flex flex-col bg-cad-grid selection:bg-cyan-500 selection:text-slate-950">
 
-    <!-- Top Navigation Bar -->
+    <!-- ========================================== -->
+    <!-- OWNER ADMIN TOOLBAR (VISIBLE ONLY TO OWNER)-->
+    <!-- ========================================== -->
+    <div id="admin-toolbar" class="hidden sticky top-0 z-50 bg-gradient-to-r from-emerald-950/95 via-slate-900/95 to-cyan-950/95 backdrop-blur-md border-b border-emerald-500/40 px-4 py-2.5 shadow-xl">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-2.5">
+                <span class="flex h-3 w-3 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
+                <span class="font-mono text-xs sm:text-sm font-bold text-emerald-300">OWNER ADMIN MODE UNLOCKED</span>
+                <span id="unsaved-badge" class="hidden px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[11px] font-mono">
+                    Unsaved Changes
+                </span>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="openProjectFormModal()" class="px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-lg shadow-emerald-500/20 transition-all">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    + Add New Project
+                </button>
+
+                <button onclick="pushToGitHubLive()" id="btn-github-push" class="px-3.5 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-lg shadow-cyan-500/20 transition-all" title="Directly update your live GitHub repository">
+                    <i data-lucide="cloud-upload" class="w-4 h-4"></i>
+                    Publish Live to GitHub
+                </button>
+
+                <button onclick="exportUpdatedHtmlFile()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30 font-mono text-xs flex items-center gap-1.5 transition-all" title="Download ready-to-upload index.html with all your new projects & photos inside">
+                    <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                    Download index.html
+                </button>
+
+                <button onclick="openGitHubConfigModal()" class="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors" title="GitHub API & Password Settings">
+                    <i data-lucide="settings" class="w-4 h-4"></i>
+                </button>
+
+                <button onclick="logoutAdmin()" class="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 text-xs font-medium flex items-center gap-1 transition-colors">
+                    <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                    Lock
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- TOP NAVIGATION BAR                         -->
+    <!-- ========================================== -->
     <header class="sticky top-0 z-40 backdrop-blur-md bg-slate-950/85 border-b border-slate-800/80">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <!-- Brand / Name -->
@@ -85,21 +131,21 @@
                 </div>
                 <div>
                     <span class="font-bold text-white tracking-tight text-base sm:text-lg block leading-none">Madhawa Madhusanka</span>
-                    <span class="font-mono text-xs text-cyan-400 block mt-1">Robotics • 3D CAD • Full-Stack</span>
+                    <span class="font-mono text-xs text-cyan-400 block mt-1">Robotics • 3D CAD • STEM • Full-Stack</span>
                 </div>
             </button>
 
             <!-- Nav Links -->
-            <nav class="flex items-center gap-2 sm:gap-4">
+            <nav class="flex items-center gap-2 sm:gap-3">
                 <button onclick="showHomeView()" class="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/70 transition-colors">
                     Projects
                 </button>
                 <button onclick="toggleAboutModal()" class="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800/70 transition-colors">
                     About Me
                 </button>
-                <button onclick="toggleGuideModal()" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-mono font-medium bg-slate-800/90 hover:bg-slate-700 text-cyan-400 border border-slate-700 transition-colors flex items-center gap-1.5" title="How to add your own photos & host on GitHub">
+                <button onclick="toggleGuideModal()" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-mono font-medium bg-slate-800/90 hover:bg-slate-700 text-cyan-400 border border-slate-700 transition-colors flex items-center gap-1.5" title="Kohomada Aluth Projects Daanne?">
                     <i data-lucide="help-circle" class="w-4 h-4"></i>
-                    <span class="hidden sm:inline">How to Edit</span>
+                    <span class="hidden md:inline">Admin Udaw</span>
                 </button>
                 <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 transition-colors" title="GitHub Profile">
                     <i data-lucide="github" class="w-4 h-4"></i>
@@ -107,19 +153,23 @@
                 <a href="https://www.linkedin.com/in/madhawa-madhusanka-798198446/" target="_blank" rel="noopener noreferrer" class="p-2 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 transition-colors" title="LinkedIn Profile">
                     <i data-lucide="linkedin" class="w-4 h-4"></i>
                 </a>
+                <!-- Owner Admin Lock Button -->
+                <button id="nav-admin-btn" onclick="handleAdminTrigger()" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-amber-400 border border-slate-800 transition-colors" title="Owner Admin Login">
+                    <i data-lucide="lock" class="w-4 h-4"></i>
+                </button>
             </nav>
         </div>
     </header>
 
-    <!-- MAIN CONTENT CONTAINER -->
+    <!-- ========================================== -->
+    <!-- MAIN CONTENT CONTAINER                     -->
+    <!-- ========================================== -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <!-- ========================================== -->
-        <!-- 1. INDEX VIEW: HERO + PROJECT GRID         -->
-        <!-- ========================================== -->
+        <!-- 1. INDEX VIEW: HERO + PROJECT GRID -->
         <div id="home-view" class="view-transition">
             
-            <!-- Compact Hero / Bio Banner -->
+            <!-- Hero / Bio Banner -->
             <section class="relative rounded-2xl bg-gradient-to-b from-slate-900/90 to-slate-900/50 border border-slate-800/90 p-6 sm:p-8 mb-10 overflow-hidden">
                 <div class="absolute -right-16 -top-16 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
                 <div class="absolute -left-16 -bottom-16 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -128,25 +178,25 @@
                     <div class="max-w-3xl">
                         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs font-mono mb-4">
                             <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                            Hardware Maker • STEM Educator • Full-Stack Developer
+                            Robotics & Embedded Systems • 3D CAD Designer • STEM Educator • Full-Stack Dev
                         </div>
                         <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-                            Engineering Hardware, 3D CAD Prototypes & Smart Software.
+                            Bringing Ideas to Life Through Hardware, 3D Design & Code.
                         </h1>
                         <p class="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
-                            Hi, I'm <strong class="text-white">Madhawa Madhusanka</strong>. I design and build custom robotics, ESP32/Arduino embedded systems, 3D-printed mechanical assemblies, and full-stack web/mobile applications. I also teach robotics and mentor students on their Arduino & IoT projects.
+                            I am a technology enthusiast, maker, and STEM educator who loves bringing ideas to life through hardware, 3D design, and code. Alongside building my own systems, I am passionate about teaching robotics and guiding students to build their own Arduino and IoT projects.
                         </p>
                         
-                        <!-- Quick Skill Pills -->
+                        <!-- Key Areas Pills -->
                         <div class="mt-5 flex flex-wrap gap-2">
                             <span class="px-2.5 py-1 rounded-md bg-slate-800/90 border border-slate-700/80 text-xs font-mono text-slate-300 flex items-center gap-1.5">
                                 <i data-lucide="bot" class="w-3.5 h-3.5 text-cyan-400"></i> Robotics & ESP32/Arduino
                             </span>
                             <span class="px-2.5 py-1 rounded-md bg-slate-800/90 border border-slate-700/80 text-xs font-mono text-slate-300 flex items-center gap-1.5">
-                                <i data-lucide="box" class="w-3.5 h-3.5 text-amber-400"></i> Onshape 3D CAD & Printing
+                                <i data-lucide="graduation-cap" class="w-3.5 h-3.5 text-emerald-400"></i> STEM Teaching & IoT Mentoring
                             </span>
                             <span class="px-2.5 py-1 rounded-md bg-slate-800/90 border border-slate-700/80 text-xs font-mono text-slate-300 flex items-center gap-1.5">
-                                <i data-lucide="graduation-cap" class="w-3.5 h-3.5 text-emerald-400"></i> STEM & IoT Mentoring
+                                <i data-lucide="box" class="w-3.5 h-3.5 text-amber-400"></i> Onshape 3D CAD & Printing
                             </span>
                             <span class="px-2.5 py-1 rounded-md bg-slate-800/90 border border-slate-700/80 text-xs font-mono text-slate-300 flex items-center gap-1.5">
                                 <i data-lucide="code-2" class="w-3.5 h-3.5 text-purple-400"></i> PHP • Tailwind • Flutter
@@ -158,29 +208,33 @@
                     <div class="flex sm:flex-row lg:flex-col gap-3 shrink-0">
                         <button onclick="toggleAboutModal()" class="px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20">
                             <i data-lucide="user-check" class="w-4 h-4"></i>
-                            Full Bio & Contact
+                            Full Bio & What I Build
+                        </button>
+                        <button id="hero-add-project-btn" onclick="openProjectFormModal()" class="hidden px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                            + Add New Project
                         </button>
                         <a href="mailto:Madhawamadusanka2005@gmail.com" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium text-sm transition-all flex items-center justify-center gap-2">
                             <i data-lucide="mail" class="w-4 h-4 text-cyan-400"></i>
-                            Email Me
+                            Contact Me
                         </a>
                     </div>
                 </div>
             </section>
 
-            <!-- Filter Bar & Search -->
+            <!-- Filter Bar -->
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
                     <h2 class="text-xl sm:text-2xl font-bold text-white flex items-center gap-2.5">
                         <i data-lucide="layers" class="w-6 h-6 text-cyan-400"></i>
-                        Featured Engineering & Tech Projects
+                        Featured Projects & Prototypes
                     </h2>
-                    <p class="text-xs sm:text-sm text-slate-400 mt-0.5">Click on any project card below to view full circuit specs, 3D designs, and photos.</p>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-0.5">Click on any project card below to view full photos, hardware components, and system details.</p>
                 </div>
 
                 <!-- Category Filter Buttons -->
                 <div id="filter-container" class="flex flex-wrap gap-2">
-                    <button onclick="filterProjects('All')" data-filter="All" class="filter-btn active-filter px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all bg-cyan-500 text-slate-950 font-semibold shadow-md shadow-cyan-500/20">
+                    <button onclick="filterProjects('All')" data-filter="All" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20">
                         All Projects
                     </button>
                     <button onclick="filterProjects('Robotics')" data-filter="Robotics" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800">
@@ -216,10 +270,22 @@
                     Back to All Projects
                 </button>
 
-                <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
-                    <span>Projects</span>
-                    <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
-                    <span id="detail-breadcrumb" class="text-cyan-400 font-semibold">Project Details</span>
+                <div class="flex items-center gap-3">
+                    <!-- Owner Edit/Delete inside Detail View -->
+                    <div id="detail-admin-actions" class="hidden flex items-center gap-2">
+                        <button id="detail-edit-btn" class="px-3 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 text-xs font-mono flex items-center gap-1.5">
+                            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Edit Project
+                        </button>
+                        <button id="detail-delete-btn" class="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 text-xs font-mono flex items-center gap-1.5">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Delete
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-xs font-mono text-slate-400">
+                        <span>Projects</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                        <span id="detail-breadcrumb" class="text-cyan-400 font-semibold">Project Details</span>
+                    </div>
                 </div>
             </div>
 
@@ -230,6 +296,259 @@
         </div>
 
     </main>
+
+    <!-- ========================================== -->
+    <!-- OWNER ADMIN LOGIN MODAL                    -->
+    <!-- ========================================== -->
+    <div id="admin-login-modal" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 sm:p-7 shadow-2xl view-transition">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                        <i data-lucide="shield-lock" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Owner Admin Login</h3>
+                        <p class="text-xs text-slate-400">Restricted to Madhawa Madhusanka</p>
+                    </div>
+                </div>
+                <button onclick="closeAdminLoginModal()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleAdminLogin(event)" class="mt-5 space-y-4">
+                <div>
+                    <label class="block text-xs font-mono uppercase text-slate-300 mb-1.5">Owner Passcode *</label>
+                    <input type="password" id="admin-passcode-input" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-sm focus:border-cyan-500 focus:outline-none">
+                    <p class="text-[11px] text-slate-500 mt-1"></p>
+                </div>
+
+                <div id="login-error-msg" class="hidden p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs">
+                    Incorrect passcode! Please try again.
+                </div>
+
+                <div class="pt-2 flex items-center justify-end gap-2">
+                    <button type="button" onclick="closeAdminLoginModal()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-lg shadow-cyan-500/20">
+                        <i data-lucide="unlock" class="w-4 h-4"></i>
+                        Unlock Admin Mode
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- ADD / EDIT PROJECT MODAL (FULL CMS FORM)   -->
+    <!-- ========================================== -->
+    <div id="project-form-modal" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-3xl w-full p-5 sm:p-7 shadow-2xl max-h-[92vh] overflow-y-auto view-transition">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800 sticky top-0 bg-slate-900 z-10">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                        <i data-lucide="folder-plus" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 id="form-modal-title" class="text-lg sm:text-xl font-bold text-white">Add New Project</h3>
+                        <p class="text-xs text-slate-400">Upload photos from your PC & fill in project details</p>
+                    </div>
+                </div>
+                <button onclick="closeProjectFormModal()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="project-cms-form" onsubmit="saveProjectFromModal(event)" class="mt-5 space-y-5 text-sm">
+                <input type="hidden" id="edit-project-id">
+
+                <!-- Title & Category Row -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-mono text-slate-300 mb-1">Project Name / Title *</label>
+                        <input type="text" id="proj-title" required placeholder="e.g., 3-Axis CNC PCB Milling Machine" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:border-cyan-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-mono text-slate-300 mb-1">Main Category *</label>
+                        <select id="proj-category" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:border-cyan-500 focus:outline-none">
+                            <option value="Robotics">Robotics & Embedded</option>
+                            <option value="IoT">IoT & Automation</option>
+                            <option value="3D CAD">3D CAD & Printing</option>
+                            <option value="Software">Web & Mobile Apps</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Badge, Status & Year Row -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-mono text-slate-300 mb-1">Badge Label</label>
+                        <input type="text" id="proj-badge" placeholder="e.g., Robotics & 3D CAD" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:border-cyan-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-mono text-slate-300 mb-1">Project Status</label>
+                        <input type="text" id="proj-status" placeholder="e.g., Completed Prototype" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:border-cyan-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-mono text-slate-300 mb-1">Technologies (Comma Separated) *</label>
+                        <input type="text" id="proj-tags" required placeholder="ESP32, Onshape CAD, Servo, C++" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:border-cyan-500 focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- MAIN COVER PHOTO UPLOAD (PC File or Link) -->
+                <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <label class="text-xs font-mono font-semibold text-cyan-400 flex items-center gap-1.5">
+                            <i data-lucide="image" class="w-4 h-4"></i>
+                            1. Main Cover Photo (Index Page Card Photo) *
+                        </label>
+                        <span class="text-[11px] text-slate-400">Auto-compressed for fast loading</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+                        <!-- Preview Box -->
+                        <div class="sm:col-span-4 aspect-[16/10] rounded-xl bg-slate-900 border border-slate-800 overflow-hidden flex items-center justify-center relative">
+                            <img id="cover-preview-img" src="https://placehold.co/800x500/0f172a/00d2ff?text=Preview" alt="Cover Preview" class="w-full h-full object-cover">
+                        </div>
+
+                        <!-- Upload Controls -->
+                        <div class="sm:col-span-8 space-y-2.5">
+                            <label class="cursor-pointer w-full py-2.5 px-4 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 border-dashed flex items-center justify-center gap-2 text-xs font-mono transition-colors">
+                                <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+                                <span>Choose Cover Photo from Computer</span>
+                                <input type="file" id="cover-file-input" accept="image/*" class="hidden" onchange="handleCoverFileUpload(event)">
+                            </label>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[11px] text-slate-500 font-mono">OR URL:</span>
+                                <input type="text" id="proj-cover-url" placeholder="Paste image link or upload from PC above" oninput="updateCoverPreviewFromUrl(this.value)" class="flex-1 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-200 focus:border-cyan-500 focus:outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EXTRA GALLERY PHOTOS UPLOAD -->
+                <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <label class="text-xs font-mono font-semibold text-emerald-400 flex items-center gap-1.5">
+                            <i data-lucide="images" class="w-4 h-4"></i>
+                            2. Extra Project Photos (Circuit, 3D CAD, Testing Photos)
+                        </label>
+                        <label class="cursor-pointer px-3 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-mono flex items-center gap-1.5 transition-colors">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                            Add Multiple Photos from PC
+                            <input type="file" id="gallery-files-input" accept="image/*" multiple class="hidden" onchange="handleGalleryFilesUpload(event)">
+                        </label>
+                    </div>
+
+                    <!-- Gallery Thumbnails Preview Grid -->
+                    <div id="gallery-preview-list" class="flex flex-wrap gap-2.5 pt-1">
+                        <!-- Dynamic gallery previews with delete X button -->
+                    </div>
+                </div>
+
+                <!-- Short Card Summary -->
+                <div>
+                    <label class="block text-xs font-mono text-slate-300 mb-1">Short Summary (Shown on Main Page Card) *</label>
+                    <input type="text" id="proj-short-desc" required maxlength="180" placeholder="1-2 sentence summary of what this project does..." class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:border-cyan-500 focus:outline-none">
+                </div>
+
+                <!-- Full Detailed Overview -->
+                <div>
+                    <label class="block text-xs font-mono text-slate-300 mb-1">Full Project Description (Shown Inside Project Page) *</label>
+                    <textarea id="proj-overview" rows="3" required placeholder="Explain the full story, how it works, mechanical design, and purpose..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white focus:border-cyan-500 focus:outline-none"></textarea>
+                </div>
+
+                <!-- Hardware Components & Key Features (2 Columns) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-mono text-amber-300 mb-1">Hardware Components / Stack (One per line) *</label>
+                        <textarea id="proj-hardware" rows="4" required placeholder="ESP32 Microcontroller&#10;3x NEMA 17 Stepper Motors&#10;Custom 3D Printed PLA Frame" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs font-mono focus:border-cyan-500 focus:outline-none"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-mono text-cyan-300 mb-1">Key Features (One per line) *</label>
+                        <textarea id="proj-features" rows="4" required placeholder="Wireless control via ESP32 web server&#10;3D modeled custom gears in Onshape&#10;Real-time sensor feedback" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs font-mono focus:border-cyan-500 focus:outline-none"></textarea>
+                    </div>
+                </div>
+
+                <!-- Technical / Circuit Architecture Note -->
+                <div>
+                    <label class="block text-xs font-mono text-slate-300 mb-1">Circuit / Firmware / 3D Architecture Note</label>
+                    <input type="text" id="proj-arch" placeholder="e.g., Powered via 5V Buck Converter; uses I2C communication for sensors." class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:border-cyan-500 focus:outline-none">
+                </div>
+
+                <!-- Modal Footer Buttons -->
+                <div class="pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
+                    <span class="text-xs text-slate-400">After saving, click <strong>"Publish Live to GitHub"</strong> or <strong>"Download index.html"</strong> on the top bar.</span>
+                    <div class="flex items-center gap-2.5">
+                        <button type="button" onclick="closeProjectFormModal()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium">
+                            Cancel
+                        </button>
+                        <button type="submit" class="px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm flex items-center gap-1.5 shadow-lg shadow-emerald-500/20">
+                            <i data-lucide="save" class="w-4 h-4"></i>
+                            Save Project
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- GITHUB API & ADMIN SETTINGS MODAL          -->
+    <!-- ========================================== -->
+    <div id="github-config-modal" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-2xl max-h-[90vh] overflow-y-auto view-transition">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                <div class="flex items-center gap-2.5">
+                    <i data-lucide="settings" class="w-5 h-5 text-cyan-400"></i>
+                    <h3 class="text-lg font-bold text-white">GitHub Auto-Publish & Admin Settings</h3>
+                </div>
+                <button onclick="closeGitHubConfigModal()" class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form onsubmit="saveAdminSettings(event)" class="mt-5 space-y-4 text-xs sm:text-sm">
+                <div class="p-3.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-slate-300 text-xs leading-relaxed">
+                    <strong class="text-cyan-300 block mb-1">1-Click GitHub Live Publish (Optional):</strong>
+                    Oya GitHub Personal Access Token ekak methana save kaloth, website eka athulenma project ekak add karala <strong>"Publish Live to GitHub"</strong> click karapu gaman oyage GitHub Pages site eka auto update wenawa!
+                </div>
+
+                <div>
+                    <label class="block text-xs font-mono text-slate-300 mb-1">GitHub Username & Repository Name</label>
+                    <input type="text" id="cfg-github-repo" placeholder="e.g., madhawa7170/madhawa7170.github.io" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:border-cyan-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-mono text-slate-300 mb-1">GitHub Branch</label>
+                    <input type="text" id="cfg-github-branch" value="main" placeholder="main" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:border-cyan-500 focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-mono text-slate-300 mb-1">GitHub Personal Access Token (Fine-Grained or Classic `repo` scope)</label>
+                    <input type="password" id="cfg-github-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:border-cyan-500 focus:outline-none">
+                    <p class="text-[11px] text-slate-500 mt-1">Stored privately in your browser only. Never shared publicly.</p>
+                </div>
+
+                <div class="pt-3 border-t border-slate-800">
+                    <label class="block text-xs font-mono text-amber-300 mb-1">Change Admin Passcode</label>
+                    <input type="text" id="cfg-admin-pass" placeholder="Default: madhawa2025" class="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white focus:border-cyan-500 focus:outline-none">
+                </div>
+
+                <div class="pt-3 flex items-center justify-between">
+                    <button type="button" onclick="resetToDefaultProjects()" class="text-xs text-rose-400 hover:underline">
+                        Reset Demo Projects
+                    </button>
+                    <div class="flex gap-2">
+                        <button type="button" onclick="closeGitHubConfigModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs">Cancel</button>
+                        <button type="submit" class="px-5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs">Save Settings</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- ========================================== -->
     <!-- ABOUT ME & STEM MENTORING MODAL            -->
@@ -256,7 +575,7 @@
                     I am a technology enthusiast, maker, and STEM educator who loves bringing ideas to life through hardware, 3D design, and code. Alongside building my own systems, I am passionate about teaching robotics and guiding students to build their own Arduino and IoT projects.
                 </p>
                 
-                <h4 class="font-bold text-white text-base pt-2">What I Do & Build:</h4>
+                <h4 class="font-bold text-white text-base pt-2">What I do & build:</h4>
                 <ul class="space-y-2.5 text-sm">
                     <li class="flex items-start gap-2.5">
                         <i data-lucide="cpu" class="w-4 h-4 text-cyan-400 shrink-0 mt-1"></i>
@@ -275,6 +594,10 @@
                         <span><strong class="text-white">Software Development:</strong> Building full-stack web systems (PHP, MySQL, Tailwind CSS) and cross-platform mobile apps (Flutter, Firebase).</span>
                     </li>
                 </ul>
+
+                <p class="text-sm text-slate-300 pt-2">
+                    I enjoy tackling hands-on engineering challenges and sharing my knowledge with the next generation of makers. Always open to connecting, mentoring, and collaborating on innovative hardware or software projects!
+                </p>
 
                 <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 mt-6">
                     <h4 class="font-semibold text-white text-sm mb-2">Get in Touch / Project Collaboration</h4>
@@ -295,44 +618,11 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- GUIDE MODAL: HOW TO ADD PHOTOS & GITHUB    -->
-    <!-- ========================================== -->
-    <div id="guide-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto view-transition">
-            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
-                <div class="flex items-center gap-2.5">
-                    <i data-lucide="terminal" class="w-6 h-6 text-cyan-400"></i>
-                    <h3 class="text-lg sm:text-xl font-bold text-white">Oyage Photos Danna Saha GitHub Host Karana Widiya</h3>
-                </div>
-                <button onclick="toggleGuideModal()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
 
-            <div class="mt-5 space-y-5 text-sm text-slate-300 leading-relaxed">
-                <div class="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-200">
-                    <strong>1. Oyage Project Photos Danna Widiya:</strong>
-                    <p class="mt-1 text-slate-300">
-                        Project folder eka athule <code class="text-cyan-400 font-mono">images</code> kiyala folder ekak hadala oyage project photos ekata danna (e.g. <code class="text-cyan-400 font-mono">images/delta-robot.jpg</code>). Ita passe me <code class="text-cyan-400 font-mono">index.html</code> file eke pahala script eke thiyena <code class="text-cyan-400 font-mono">projectsData</code> list eke <code class="text-cyan-400 font-mono">image: "images/delta-robot.jpg"</code> widiyata wenas karanna.
-                    </p>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-white mb-2">2. Aluth Project Ekak Ekathu Karana Widiya:</h4>
-                    <p class="mb-2">Me code eke pahala <code class="text-cyan-400 font-mono">&lt;script&gt;</code> tag eka athule <code class="text-cyan-400 font-mono">const projectsData = [...]</code> kiyala array ekak thiyenawa. Eke thiyena project block ekak copy-paste karala aluth project ekak lesiyenma danna puluwan.</p>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-white mb-2">3. GitHub Pages Wala Free Host Karana Widiya:</h4>
-                    <ol class="list-decimal list-inside space-y-1.5 text-slate-300">
-                        <li>GitHub eke <code class="text-cyan-400 font-mono">username.github.io</code> kiyala Public repository ekak hadanna.</li>
-                        <li>Me file eka <code class="text-cyan-400 font-mono">index.html</code> namin saha oyage <code class="text-cyan-400 font-mono">images</code> folder eka e repository ekata upload karanna.</li>
-                        <li>Repository eke <strong>Settings &rarr; Pages</strong> walata gihin Branch eka <code class="text-cyan-400 font-mono">main</code> deela Save karanna.</li>
-                        <li>Winadi deken oyage portfolio website eka free live wada karanawa!</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
+    <!-- Custom Toast Notification -->
+    <div id="toast-box" class="fixed bottom-5 right-5 z-50 hidden px-4 py-3 rounded-xl bg-slate-900 border border-cyan-500/50 text-white text-xs sm:text-sm font-medium shadow-2xl flex items-center gap-2.5 view-transition">
+        <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+        <span id="toast-text">Action completed</span>
     </div>
 
     <!-- Footer -->
@@ -340,31 +630,26 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
             <div class="flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                <span>© <span id="year"></span> Madhawa Madhusanka. Built for GitHub Pages.</span>
+                <span>© <span id="year"></span> Madhawa Madhusanka • Hardware, 3D CAD & Full-Stack Portfolio</span>
             </div>
             <div class="flex items-center gap-4 font-mono">
                 <button onclick="showHomeView()" class="hover:text-cyan-400 transition-colors">Projects</button>
                 <button onclick="toggleAboutModal()" class="hover:text-cyan-400 transition-colors">About</button>
-                <a href="https://www.linkedin.com/in/madhawa-madhusanka-798198446/" target="_blank" class="hover:text-cyan-400 transition-colors">LinkedIn</a>
+                <button onclick="handleAdminTrigger()" class="hover:text-amber-400 transition-colors flex items-center gap-1">
+                    <i data-lucide="lock" class="w-3 h-3"></i> Owner Admin
+                </button>
             </div>
         </div>
     </footer>
 
     <!-- ========================================== -->
-    <!-- JAVASCRIPT: PROJECT DATA & VIEW CONTROLLER -->
+    <!-- JAVASCRIPT: CMS ENGINE, DATA & CONTROLLERS -->
     <!-- ========================================== -->
     <script>
-        // Set Current Year
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        /**
-         * ============================================================================
-         * MADHAWA'S PROJECTS DATABASE
-         * Oyage photos danna oni nam `image` saha `gallery` links wenas karanna.
-         * (e.g., image: "./images/my-robot.jpg")
-         * ============================================================================
-         */
-        const projectsData = [
+        /*__PROJECTS_DATA_START__*/
+        const defaultProjectsData = [
             {
                 id: "delta-robot-plotter",
                 title: "3-Axis Delta Robot for 2D Plotting",
@@ -395,9 +680,7 @@
                     "Automated homing cycle utilizing top-mounted limit switches for repeatable zero calibration.",
                     "Custom-designed 3D CAD effector holds standard markers/pens with spring-loaded Z compliance."
                 ],
-                architectureNote: "Motor pulse (PUL+) and direction (DIR+) lines are driven directly by ESP32 GPIO pins through TB6600 optocouplers, with non-blocking stepper interpolation.",
-                githubUrl: "#",
-                cadUrl: "#"
+                architectureNote: "Motor pulse (PUL+) and direction (DIR+) lines are driven directly by ESP32 GPIO pins through TB6600 optocouplers, with non-blocking stepper interpolation."
             },
             {
                 id: "quadruped-spider-robot",
@@ -427,9 +710,7 @@
                     "Lightweight, snap-fit 3D printed mechanical joints optimized for low inertia and easy servo horn mounting.",
                     "Great educational demonstrator for teaching students robotics kinematics and servo calibration."
                 ],
-                architectureNote: "Powered by a dedicated high-current 5V step-down regulator to prevent brownout resets during simultaneous 12-servo torque spikes.",
-                githubUrl: "#",
-                cadUrl: "#"
+                architectureNote: "Powered by a dedicated high-current 5V step-down regulator to prevent brownout resets during simultaneous 12-servo torque spikes."
             },
             {
                 id: "motorcycle-gps-gsm-security",
@@ -459,9 +740,7 @@
                     "Two-way SMS command parser allowing the owner to request live location on demand.",
                     "Low-power sleep state optimizations to protect the motorcycle battery during multi-day parking."
                 ],
-                architectureNote: "Uses dual Hardware UART serial ports on the ESP32 (`HardwareSerial`) to communicate simultaneously with the GPS module and GSM modem without buffer loss.",
-                githubUrl: "#",
-                cadUrl: "#"
+                architectureNote: "Uses dual Hardware UART serial ports on the ESP32 (HardwareSerial) to communicate simultaneously with the GPS module and GSM modem without buffer loss."
             },
             {
                 id: "pid-line-following-robot",
@@ -491,9 +770,7 @@
                     "Adjustable sensor height mount designed in 3D CAD to block ambient IR interference.",
                     "Used as a core reference build for mentoring school and competition robotics students."
                 ],
-                architectureNote: "PWM channels drive `PWMA` and `PWMB` independently while direction pins handle forward, coast, and active reverse pivot turns on tight 90-degree corners.",
-                githubUrl: "#",
-                cadUrl: "#"
+                architectureNote: "PWM channels drive PWMA and PWMB independently while direction pins handle forward, coast, and active reverse pivot turns on tight 90-degree corners."
             },
             {
                 id: "smartsort-waste-bin",
@@ -524,9 +801,7 @@
                     "Status LEDs and buzzer indicators provide immediate user feedback during sorting.",
                     "Ideal showcase of combining mechanical CAD design with sensor-driven automation."
                 ],
-                architectureNote: "Sequential state-machine firmware prevents false triggers and waits for servo settling before releasing the waste item.",
-                githubUrl: "#",
-                cadUrl: "#"
+                architectureNote: "Sequential state-machine firmware prevents false triggers and waits for servo settling before releasing the waste item."
             },
             {
                 id: "offline-rfid-attendance-system",
@@ -555,14 +830,56 @@
                     "Fully offline-ready architecture using locally compiled Tailwind CSS for fast LAN performance.",
                     "Searchable date-range filtering and one-click CSV/PDF attendance sheet exports."
                 ],
-                architectureNote: "Built with clean PDO/MySQLi prepared statements and asynchronous JavaScript polling for zero-reload card scanning.",
-                githubUrl: "#",
-                cadUrl: "#"
+                architectureNote: "Built with clean PDO/MySQLi prepared statements and asynchronous JavaScript polling for zero-reload card scanning."
             }
         ];
+        /*__PROJECTS_DATA_END__*/
 
-        // Current filter state
+        // State Variables
+        const STORAGE_KEY = 'madhawa_portfolio_projects_v2';
+        const SETTINGS_KEY = 'madhawa_portfolio_admin_cfg';
+        let projectsData = [];
         let currentFilter = 'All';
+        let isAdminUnlocked = false;
+        let tempGalleryImages = [];
+
+        // Load Projects (Merges baked defaultProjectsData with any local edits)
+        function loadProjects() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    projectsData = JSON.parse(saved);
+                } else {
+                    projectsData = JSON.parse(JSON.stringify(defaultProjectsData));
+                }
+            } catch (e) {
+                projectsData = JSON.parse(JSON.stringify(defaultProjectsData));
+            }
+        }
+
+        function saveProjectsToBrowser() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(projectsData));
+                document.getElementById('unsaved-badge').classList.remove('hidden');
+            } catch (e) {
+                showToast("Storage full! Try smaller photos or export index.html.");
+            }
+        }
+
+        // Get Admin Settings
+        function getAdminSettings() {
+            try {
+                const cfg = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
+                return {
+                    passcode: cfg.passcode || 'madhawa2025',
+                    repo: cfg.repo || '',
+                    branch: cfg.branch || 'main',
+                    token: cfg.token || ''
+                };
+            } catch (e) {
+                return { passcode: 'madhawa2025', repo: '', branch: 'main', token: '' };
+            }
+        }
 
         // Badge Color Helper
         function getCategoryColors(category) {
@@ -581,7 +898,7 @@
         }
 
         // Render Project Grid on Index View
-        function renderProjectsGrid(filter = 'All') {
+        function renderProjectsGrid(filter = currentFilter) {
             const grid = document.getElementById('projects-grid');
             const filtered = filter === 'All' 
                 ? projectsData 
@@ -590,7 +907,7 @@
             grid.innerHTML = filtered.map(project => `
                 <article 
                     onclick="openProjectDetail('${project.id}')"
-                    class="group cursor-pointer rounded-2xl bg-slate-900/90 border border-slate-800/90 hover:border-cyan-500/60 overflow-hidden transition-all duration-300 flex flex-col card-glow"
+                    class="group cursor-pointer rounded-2xl bg-slate-900/90 border border-slate-800/90 hover:border-cyan-500/60 overflow-hidden transition-all duration-300 flex flex-col card-glow relative"
                 >
                     <!-- Project Photo Container -->
                     <div class="relative aspect-[16/10] w-full bg-slate-950 overflow-hidden border-b border-slate-800/80">
@@ -603,9 +920,22 @@
                         <!-- Category Badge Overlay -->
                         <div class="absolute top-3 left-3">
                             <span class="px-2.5 py-1 rounded-lg text-xs font-mono font-medium backdrop-blur-md border ${getCategoryColors(project.category)}">
-                                ${project.badgeText}
+                                ${project.badgeText || project.category}
                             </span>
                         </div>
+
+                        <!-- OWNER QUICK EDIT / DELETE OVERLAY BUTTONS -->
+                        ${isAdminUnlocked ? `
+                            <div class="absolute top-3 right-3 flex items-center gap-1.5 z-20" onclick="event.stopPropagation()">
+                                <button onclick="openProjectFormModal('${project.id}')" class="p-2 rounded-lg bg-slate-950/90 hover:bg-amber-500 text-amber-400 hover:text-slate-950 border border-amber-500/40 backdrop-blur-md transition-colors shadow-lg" title="Edit Project">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="deleteProject('${project.id}')" class="p-2 rounded-lg bg-slate-950/90 hover:bg-rose-500 text-rose-400 hover:text-white border border-rose-500/40 backdrop-blur-md transition-colors shadow-lg" title="Delete Project">
+                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                        ` : ''}
+
                         <!-- Hover Action Indicator -->
                         <div class="absolute bottom-3 right-3 w-9 h-9 rounded-xl bg-slate-950/80 backdrop-blur-md border border-slate-700 flex items-center justify-center text-cyan-400 group-hover:bg-cyan-500 group-hover:text-slate-950 group-hover:border-cyan-400 transition-colors">
                             <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
@@ -625,7 +955,7 @@
 
                         <!-- Tech Stack Tags -->
                         <div class="mt-4 pt-3 border-t border-slate-800/80 flex flex-wrap gap-1.5">
-                            ${project.tags.slice(0, 4).map(tag => `
+                            ${(project.tags || []).slice(0, 4).map(tag => `
                                 <span class="px-2 py-0.5 rounded bg-slate-950 text-slate-300 border border-slate-800 text-[11px] font-mono">
                                     ${tag}
                                 </span>
@@ -641,8 +971,6 @@
         // Filter Handler
         function filterProjects(category) {
             currentFilter = category;
-            
-            // Update active button styles
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 if (btn.getAttribute('data-filter') === category) {
                     btn.className = "filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20";
@@ -650,7 +978,6 @@
                     btn.className = "filter-btn px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition-all bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-800";
                 }
             });
-
             renderProjectsGrid(category);
         }
 
@@ -661,12 +988,22 @@
 
             document.getElementById('detail-breadcrumb').textContent = project.title;
 
+            // Setup Admin Edit/Delete inside Detail View
+            const detailAdminBox = document.getElementById('detail-admin-actions');
+            if (isAdminUnlocked) {
+                detailAdminBox.classList.remove('hidden');
+                document.getElementById('detail-edit-btn').onclick = () => openProjectFormModal(project.id);
+                document.getElementById('detail-delete-btn').onclick = () => deleteProject(project.id);
+            } else {
+                detailAdminBox.classList.add('hidden');
+            }
+
             const detailContainer = document.getElementById('detail-content');
             detailContainer.innerHTML = `
                 <!-- Hero Banner Image & Title Overlay -->
                 <div class="grid grid-cols-1 lg:grid-cols-12 border-b border-slate-800">
                     <!-- Main Photo -->
-                    <div class="lg:col-span-7 bg-slate-950 relative min-h-[280px] sm:min-h-[380px] flex items-center justify-center overflow-hidden">
+                    <div class="lg:col-span-7 bg-slate-950 relative min-h-[280px] sm:min-h-[400px] flex items-center justify-center overflow-hidden">
                         <img 
                             id="main-detail-image"
                             src="${project.image}" 
@@ -680,10 +1017,10 @@
                         <div>
                             <div class="flex flex-wrap items-center gap-2 mb-3">
                                 <span class="px-3 py-1 rounded-lg text-xs font-mono font-medium border ${getCategoryColors(project.category)}">
-                                    ${project.badgeText}
+                                    ${project.badgeText || project.category}
                                 </span>
                                 <span class="px-2.5 py-1 rounded-lg text-xs font-mono bg-slate-800 text-slate-300">
-                                    ${project.status}
+                                    ${project.status || 'Completed'}
                                 </span>
                             </div>
 
@@ -699,7 +1036,7 @@
                             <div class="mt-6">
                                 <h4 class="text-xs font-mono uppercase tracking-wider text-slate-400 mb-2.5">Technologies & Microcontrollers</h4>
                                 <div class="flex flex-wrap gap-2">
-                                    ${project.tags.map(tag => `
+                                    ${(project.tags || []).map(tag => `
                                         <span class="px-3 py-1 rounded-lg bg-slate-950 text-cyan-300 border border-slate-800 text-xs font-mono">
                                             ${tag}
                                         </span>
@@ -712,11 +1049,11 @@
                         <div class="mt-6 pt-5 border-t border-slate-800/80">
                             <span class="text-xs font-mono text-slate-400 block mb-2">Project Photos (Click to preview):</span>
                             <div class="flex gap-2.5 overflow-x-auto pb-1">
-                                <button onclick="changeDetailImage('${project.image}')" class="w-20 h-14 rounded-lg overflow-hidden border-2 border-cyan-500 shrink-0 focus:outline-none">
+                                <button onclick="changeDetailImage(this.dataset.src)" data-src="${project.image}" class="w-20 h-14 rounded-lg overflow-hidden border-2 border-cyan-500 shrink-0 focus:outline-none">
                                     <img src="${project.image}" class="w-full h-full object-cover" alt="Thumbnail 1">
                                 </button>
-                                ${project.gallery.map((imgUrl, idx) => `
-                                    <button onclick="changeDetailImage('${imgUrl}')" class="w-20 h-14 rounded-lg overflow-hidden border border-slate-700 hover:border-cyan-400 shrink-0 focus:outline-none transition-colors">
+                                ${(project.gallery || []).map((imgUrl, idx) => `
+                                    <button onclick="changeDetailImage(this.dataset.src)" data-src="${imgUrl}" class="w-20 h-14 rounded-lg overflow-hidden border border-slate-700 hover:border-cyan-400 shrink-0 focus:outline-none transition-colors">
                                         <img src="${imgUrl}" class="w-full h-full object-cover" alt="Thumbnail ${idx + 2}">
                                     </button>
                                 `).join('')}
@@ -736,7 +1073,7 @@
                                 Key Engineering & System Features
                             </h3>
                             <ul class="space-y-3">
-                                ${project.features.map(feat => `
+                                ${(project.features || []).map(feat => `
                                     <li class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80 text-sm text-slate-300">
                                         <span class="w-2 h-2 rounded-full bg-cyan-400 mt-2 shrink-0"></span>
                                         <span>${feat}</span>
@@ -746,6 +1083,7 @@
                         </div>
 
                         <!-- System Architecture Note -->
+                        ${project.architectureNote ? `
                         <div class="p-5 rounded-xl bg-gradient-to-r from-cyan-500/10 to-blue-600/5 border border-cyan-500/20">
                             <h4 class="text-sm font-mono font-semibold text-cyan-300 flex items-center gap-2 mb-1.5">
                                 <i data-lucide="cpu" class="w-4 h-4"></i>
@@ -755,6 +1093,7 @@
                                 ${project.architectureNote}
                             </p>
                         </div>
+                        ` : ''}
                     </div>
 
                     <!-- Right Column: Bill of Materials (BOM) / Components Used -->
@@ -765,7 +1104,7 @@
                                 Hardware Components & Stack
                             </h3>
                             <ul class="divide-y divide-slate-800/80 text-sm">
-                                ${project.hardwareList.map(item => `
+                                ${(project.hardwareList || []).map(item => `
                                     <li class="py-2.5 flex items-center gap-2.5 text-slate-300">
                                         <i data-lucide="chevron-right" class="w-4 h-4 text-cyan-400 shrink-0"></i>
                                         <span>${item}</span>
@@ -793,41 +1132,416 @@
                 </div>
             `;
 
-            // Switch Views
             document.getElementById('home-view').classList.add('hidden');
             document.getElementById('detail-view').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
             lucide.createIcons();
         }
 
-        // Swap Main Image inside Detail View
         function changeDetailImage(imgUrl) {
             const mainImg = document.getElementById('main-detail-image');
-            if (mainImg) {
-                mainImg.src = imgUrl;
-            }
+            if (mainImg) mainImg.src = imgUrl;
         }
 
-        // Return to Home Project Grid
         function showHomeView() {
             document.getElementById('detail-view').classList.add('hidden');
             document.getElementById('home-view').classList.remove('hidden');
+            renderProjectsGrid(currentFilter);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Modals Toggle
+        // ============================================================================
+        // OWNER ADMIN AUTHENTICATION & CMS LOGIC
+        // ============================================================================
+        function handleAdminTrigger() {
+            if (isAdminUnlocked) {
+                openProjectFormModal();
+            } else {
+                document.getElementById('login-error-msg').classList.add('hidden');
+                document.getElementById('admin-passcode-input').value = '';
+                document.getElementById('admin-login-modal').classList.remove('hidden');
+            }
+        }
+
+        function closeAdminLoginModal() {
+            document.getElementById('admin-login-modal').classList.add('hidden');
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const entered = document.getElementById('admin-passcode-input').value.trim();
+            const cfg = getAdminSettings();
+
+            if (entered === cfg.passcode) {
+                isAdminUnlocked = true;
+                closeAdminLoginModal();
+                updateAdminUI();
+                showToast("Owner Admin Mode Unlocked!");
+            } else {
+                document.getElementById('login-error-msg').classList.remove('hidden');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminUnlocked = false;
+            updateAdminUI();
+            showToast("Admin Mode Locked.");
+        }
+
+        function updateAdminUI() {
+            const toolbar = document.getElementById('admin-toolbar');
+            const heroBtn = document.getElementById('hero-add-project-btn');
+            const detailAdmin = document.getElementById('detail-admin-actions');
+
+            if (isAdminUnlocked) {
+                toolbar.classList.remove('hidden');
+                heroBtn.classList.remove('hidden');
+            } else {
+                toolbar.classList.add('hidden');
+                heroBtn.classList.add('hidden');
+                detailAdmin.classList.add('hidden');
+            }
+            renderProjectsGrid(currentFilter);
+        }
+
+        // ============================================================================
+        // IMAGE UPLOAD & AUTO-COMPRESSION (HTML5 CANVAS)
+        // Compresses high-res PC photos into crisp WebP/JPEG data URLs so index.html stays fast
+        // ============================================================================
+        function compressImageFile(file, maxWidth = 1000, quality = 0.8) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > maxWidth) {
+                            height = Math.round((height * maxWidth) / width);
+                            width = maxWidth;
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+
+                        // Export compressed JPEG
+                        const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                        resolve(compressedDataUrl);
+                    };
+                    img.onerror = reject;
+                    img.src = event.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function handleCoverFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            showToast("Compressing cover photo...");
+            const compressed = await compressImageFile(file, 1000, 0.82);
+            document.getElementById('proj-cover-url').value = compressed;
+            document.getElementById('cover-preview-img').src = compressed;
+            showToast("Cover photo ready!");
+        }
+
+        function updateCoverPreviewFromUrl(url) {
+            if (url && url.trim() !== '') {
+                document.getElementById('cover-preview-img').src = url.trim();
+            }
+        }
+
+        async function handleGalleryFilesUpload(event) {
+            const files = Array.from(event.target.files);
+            if (!files.length) return;
+            showToast(`Adding ${files.length} photo(s)...`);
+            for (const file of files) {
+                const compressed = await compressImageFile(file, 950, 0.8);
+                tempGalleryImages.push(compressed);
+            }
+            renderGalleryPreviewList();
+            showToast("Gallery photos added!");
+        }
+
+        function removeGalleryPhoto(index) {
+            tempGalleryImages.splice(index, 1);
+            renderGalleryPreviewList();
+        }
+
+        function renderGalleryPreviewList() {
+            const container = document.getElementById('gallery-preview-list');
+            if (tempGalleryImages.length === 0) {
+                container.innerHTML = `<span class="text-xs text-slate-500 font-mono">No extra gallery photos added yet.</span>`;
+                return;
+            }
+            container.innerHTML = tempGalleryImages.map((imgSrc, idx) => `
+                <div class="relative w-24 h-16 rounded-lg overflow-hidden border border-slate-700 group">
+                    <img src="${imgSrc}" class="w-full h-full object-cover">
+                    <button type="button" onclick="removeGalleryPhoto(${idx})" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs shadow">
+                        ×
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // ============================================================================
+        // ADD / EDIT / DELETE PROJECT MODAL CONTROLLERS
+        // ============================================================================
+        function openProjectFormModal(projectId = null) {
+            const form = document.getElementById('project-cms-form');
+            form.reset();
+
+            if (projectId) {
+                const p = projectsData.find(item => item.id === projectId);
+                if (!p) return;
+                document.getElementById('form-modal-title').textContent = "Edit Project: " + p.title;
+                document.getElementById('edit-project-id').value = p.id;
+                document.getElementById('proj-title').value = p.title;
+                document.getElementById('proj-category').value = p.category;
+                document.getElementById('proj-badge').value = p.badgeText || '';
+                document.getElementById('proj-status').value = p.status || 'Completed';
+                document.getElementById('proj-tags').value = (p.tags || []).join(', ');
+                document.getElementById('proj-cover-url').value = p.image || '';
+                document.getElementById('cover-preview-img').src = p.image || 'https://placehold.co/800x500/0f172a/00d2ff?text=Preview';
+                document.getElementById('proj-short-desc').value = p.shortDesc || '';
+                document.getElementById('proj-overview').value = p.overview || '';
+                document.getElementById('proj-hardware').value = (p.hardwareList || []).join('\n');
+                document.getElementById('proj-features').value = (p.features || []).join('\n');
+                document.getElementById('proj-arch').value = p.architectureNote || '';
+                tempGalleryImages = [...(p.gallery || [])];
+            } else {
+                document.getElementById('form-modal-title').textContent = "Add New Project";
+                document.getElementById('edit-project-id').value = '';
+                document.getElementById('cover-preview-img').src = 'https://placehold.co/800x500/0f172a/00d2ff?text=Upload+Cover+Photo';
+                tempGalleryImages = [];
+            }
+
+            renderGalleryPreviewList();
+            document.getElementById('project-form-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeProjectFormModal() {
+            document.getElementById('project-form-modal').classList.add('hidden');
+        }
+
+        function saveProjectFromModal(event) {
+            event.preventDefault();
+
+            const existingId = document.getElementById('edit-project-id').value.trim();
+            const title = document.getElementById('proj-title').value.trim();
+            const category = document.getElementById('proj-category').value;
+            const badgeText = document.getElementById('proj-badge').value.trim() || category;
+            const status = document.getElementById('proj-status').value.trim() || 'Completed';
+            const tags = document.getElementById('proj-tags').value.split(',').map(t => t.trim()).filter(Boolean);
+            const image = document.getElementById('proj-cover-url').value.trim() || `https://placehold.co/800x520/0f172a/00d2ff?text=${encodeURIComponent(title)}`;
+            const shortDesc = document.getElementById('proj-short-desc').value.trim();
+            const overview = document.getElementById('proj-overview').value.trim();
+            const hardwareList = document.getElementById('proj-hardware').value.split('\n').map(l => l.trim()).filter(Boolean);
+            const features = document.getElementById('proj-features').value.split('\n').map(l => l.trim()).filter(Boolean);
+            const architectureNote = document.getElementById('proj-arch').value.trim();
+
+            const projectObj = {
+                id: existingId || (title.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + Date.now().toString().slice(-4)),
+                title,
+                category,
+                badgeText,
+                status,
+                date: new Date().getFullYear().toString(),
+                shortDesc,
+                image,
+                gallery: [...tempGalleryImages],
+                tags,
+                overview,
+                hardwareList,
+                features,
+                architectureNote
+            };
+
+            if (existingId) {
+                const index = projectsData.findIndex(p => p.id === existingId);
+                if (index !== -1) projectsData[index] = projectObj;
+                showToast("Project updated! Click 'Publish Live' or 'Download index.html' to make permanent.");
+            } else {
+                projectsData.unshift(projectObj); // Add new project to the very top
+                showToast("New project added! Click 'Publish Live' or 'Download index.html' to save permanently.");
+            }
+
+            saveProjectsToBrowser();
+            closeProjectFormModal();
+            renderProjectsGrid(currentFilter);
+
+            // If currently on detail view of this project, refresh it
+            if (!document.getElementById('detail-view').classList.contains('hidden')) {
+                openProjectDetail(projectObj.id);
+            }
+        }
+
+        function deleteProject(projectId) {
+            const target = projectsData.find(p => p.id === projectId);
+            if (!target) return;
+
+            projectsData = projectsData.filter(p => p.id !== projectId);
+            saveProjectsToBrowser();
+            showHomeView();
+            showToast(`Deleted "${target.title}".`);
+        }
+
+        // ============================================================================
+        // EXPORT UPDATED STANDALONE INDEX.HTML OR 1-CLICK PUSH TO GITHUB LIVE
+        // ============================================================================
+        function generateFullUpdatedHtmlSource() {
+            const currentDoc = document.documentElement.outerHTML;
+            const replacementBlock = `/*__PROJECTS_DATA_START__*/\n        const defaultProjectsData = ${JSON.stringify(projectsData, null, 4)};\n        /*__PROJECTS_DATA_END__*/`;
+
+            const regex = /\/\*__PROJECTS_DATA_START__\*\/[\s\S]*?\/\*__PROJECTS_DATA_END__\*\//;
+            return "<!DOCTYPE html>\n" + currentDoc.replace(regex, replacementBlock);
+        }
+
+        function exportUpdatedHtmlFile() {
+            const updatedHtml = generateFullUpdatedHtmlSource();
+            const blob = new Blob([updatedHtml], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            document.getElementById('unsaved-badge').classList.add('hidden');
+            showToast("Downloaded updated index.html! Upload it to your GitHub repo.");
+        }
+
+        async function pushToGitHubLive() {
+            const cfg = getAdminSettings();
+            if (!cfg.repo || !cfg.token) {
+                openGitHubConfigModal();
+                showToast("Please enter your GitHub Repo & Token first, or use 'Download index.html'.");
+                return;
+            }
+
+            const btn = document.getElementById('btn-github-push');
+            const origText = btn.innerHTML;
+            btn.innerHTML = `<i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Publishing...`;
+            lucide.createIcons();
+
+            try {
+                const apiUrl = `https://api.github.com/repos/${cfg.repo.trim()}/contents/index.html`;
+                
+                // 1. Fetch current file SHA if it exists
+                let sha = null;
+                const getRes = await fetch(`${apiUrl}?ref=${cfg.branch || 'main'}`, {
+                    headers: {
+                        'Authorization': `Bearer ${cfg.token.trim()}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+                if (getRes.ok) {
+                    const fileData = await getRes.json();
+                    sha = fileData.sha;
+                }
+
+                // 2. Encode updated HTML in Base64 (UTF-8 safe)
+                const updatedHtml = generateFullUpdatedHtmlSource();
+                const base64Content = btoa(unescape(encodeURIComponent(updatedHtml)));
+
+                // 3. PUT updated index.html directly to GitHub
+                const putBody = {
+                    message: `Update portfolio projects via Built-in Admin CMS (${new Date().toLocaleDateString()})`,
+                    content: base64Content,
+                    branch: cfg.branch || 'main'
+                };
+                if (sha) putBody.sha = sha;
+
+                const putRes = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${cfg.token.trim()}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(putBody)
+                });
+
+                if (!putRes.ok) {
+                    const errData = await putRes.json();
+                    throw new Error(errData.message || 'GitHub API Error');
+                }
+
+                document.getElementById('unsaved-badge').classList.add('hidden');
+                showToast("Published Live to GitHub! Your website will update in ~1 minute.");
+            } catch (err) {
+                showToast("GitHub Push Error: " + err.message);
+            } finally {
+                btn.innerHTML = origText;
+                lucide.createIcons();
+            }
+        }
+
+        // Settings Modal
+        function openGitHubConfigModal() {
+            const cfg = getAdminSettings();
+            document.getElementById('cfg-github-repo').value = cfg.repo;
+            document.getElementById('cfg-github-branch').value = cfg.branch;
+            document.getElementById('cfg-github-token').value = cfg.token;
+            document.getElementById('cfg-admin-pass').value = cfg.passcode;
+            document.getElementById('github-config-modal').classList.remove('hidden');
+        }
+
+        function closeGitHubConfigModal() {
+            document.getElementById('github-config-modal').classList.add('hidden');
+        }
+
+        function saveAdminSettings(e) {
+            e.preventDefault();
+            const newCfg = {
+                repo: document.getElementById('cfg-github-repo').value.trim(),
+                branch: document.getElementById('cfg-github-branch').value.trim() || 'main',
+                token: document.getElementById('cfg-github-token').value.trim(),
+                passcode: document.getElementById('cfg-admin-pass').value.trim() || 'madhawa2025'
+            };
+            localStorage.setItem(SETTINGS_KEY, JSON.stringify(newCfg));
+            closeGitHubConfigModal();
+            showToast("Admin & GitHub Settings Saved!");
+        }
+
+        function resetToDefaultProjects() {
+            localStorage.removeItem(STORAGE_KEY);
+            loadProjects();
+            renderProjectsGrid('All');
+            closeGitHubConfigModal();
+            showToast("Reset to default projects.");
+        }
+
+        // Modals & Toast Helpers
         function toggleAboutModal() {
-            const modal = document.getElementById('about-modal');
-            modal.classList.toggle('hidden');
+            document.getElementById('about-modal').classList.toggle('hidden');
         }
 
         function toggleGuideModal() {
-            const modal = document.getElementById('guide-modal');
-            modal.classList.toggle('hidden');
+            document.getElementById('guide-modal').classList.toggle('hidden');
+        }
+
+        let toastTimer = null;
+        function showToast(msg) {
+            const box = document.getElementById('toast-box');
+            document.getElementById('toast-text').textContent = msg;
+            box.classList.remove('hidden');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                box.classList.add('hidden');
+            }, 4200);
         }
 
         // Initialize Portfolio on Page Load
         window.addEventListener('DOMContentLoaded', () => {
+            loadProjects();
             renderProjectsGrid('All');
             lucide.createIcons();
         });
